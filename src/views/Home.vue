@@ -1,12 +1,17 @@
 <template>
   <Container>
-    111
+    <div class="test">11</div>
   </Container>
 </template>
 
 <script>
 export default {
   name: 'Home',
+  mounted () {
+    window.addEventListener('resize', function () {
+      console.log("resize")
+    })
+  },
   setup () {
     return {}
   }
@@ -14,4 +19,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.test {
+  font-size: 16px;
+  color: red;
+  transform: scale(0.5);
+}
 </style>
