@@ -1,55 +1,55 @@
 <template>
   <div class="loading">
     <svg
-      width="50px"
-      height="50px"
+      :width="width"
+      :height="height"
     >
       <circle
-        cx="25"
-        cy="25"
-        r="20"
+        :cx="width/2"
+        :cy="height/2"
+        :r="cr"
         fill="transparent"
         stroke-width="3"
-        stroke-dasharray="31.415, 31.415"
-        stroke="#02bcfe"
+        :stroke-dasharray="dashArrayOut"
+        :stroke="outlineColor"
         stroke-linecap="round"
       >
         <animateTransform
           attributeName="transform"
           type="rotate"
-          values="0, 25 25;360, 25 25"
-          dur="1.5s"
+          :values="transOutTrans"
+          :dur="durIn+'s'"
           repeatCount="indefinite"
         />
         <animate
           attributeName="stroke"
-          values="#02bcfe;#3be6cb;#02bcfe"
-          dur="3s"
+          :values="transOutColor"
+          :dur="durColor+'s'"
           repeatCount="indefinite"
         />
       </circle>
 
       <circle
-        cx="25"
-        cy="25"
-        r="10"
+        :cx="width/2"
+        :cy="height/2"
+        :r="crIn"
         fill="transparent"
         stroke-width="3"
-        stroke-dasharray="15.7, 15.7"
-        stroke="#3be6cb"
+        :stroke-dasharray="dashArrayIn"
+        :stroke="inlineColor"
         stroke-linecap="round"
       >
         <animateTransform
           attributeName="transform"
           type="rotate"
-          values="360, 25 25;0, 25 25"
-          dur="1.5s"
+          :values="transInTrans"
+          :dur="durIn+'s'"
           repeatCount="indefinite"
         />
         <animate
           attributeName="stroke"
-          values="#3be6cb;#02bcfe;#3be6cb"
-          dur="3s"
+          :values="transInColor"
+          :dur="durColor+'s'"
           repeatCount="indefinite"
         />
       </circle>
@@ -61,8 +61,72 @@
 </template>
 
 <script>
+import { computed, onMounted } from "vue"
 export default {
-  name: 'Loading'
+  name: 'Loading',
+  props: {
+    width: {
+      type: [Number, String],
+      default: '50'
+    },
+    height: {
+      type: [Number, String],
+      default: '50'
+    },
+    cr: {
+      type: Number,
+      default: 20
+    },
+    crIn: {
+      type: Number,
+      default: 10
+    },
+    inlineColor: {
+      type: String,
+      default: '#3be6cb'
+    },
+    outlineColor: {
+      type: String,
+      default: '#02bcfe'
+    },
+    durColor: {
+      type: Number,
+      default: 3
+    },
+    durIn: {
+      type: Number,
+      default: 1.5
+    }
+  },
+  setup (ctx) {
+    const { outlineColor, inlineColor, cr, crIn, width, height } = ctx
+    let transOutColor = ''
+    let transInColor = ''
+    let transOutTrans = computed(() => `0,${width / 2} ${height / 2};360,${width / 2} ${height / 2}`)
+    let transInTrans = computed(() => `360,${width / 2} ${height / 2};0,${width / 2} ${height / 2}`)
+
+    let dashArrayIn = computed(() => (2 * Math.PI * crIn / 4).toFixed(2))
+    let dashArrayOut = computed(() => (2 * Math.PI * cr / 4).toFixed(2))
+
+    onMounted(() => {
+      transOutColor = computed(() => `${outlineColor}${inlineColor}${outlineColor}`)
+      transInColor = computed(() => `${inlineColor}${outlineColor}${inlineColor}`)
+    })
+
+    return {
+      transOutColor,
+      transInColor,
+      transOutTrans,
+      transInTrans,
+      dashArrayOut,
+      dashArrayIn
+    }
+
+  }
+  /**
+   *  transOutColor，transInColor 如果不放入onMounted中，颜色会不生效
+   *  transOutTrans,transInTrans 如果放入onMounted中，会不生效
+  */
 }
 </script>
 
