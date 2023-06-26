@@ -22,6 +22,6 @@ export default {
 .test {
   font-size: 16px;
   color: red;
-  transform: scale(0.5);
+  transform: scale(1, 1);
 }
 </style>
