@@ -12,7 +12,9 @@
       :options="{width:3840,height:2160}"
       v-else
     >
-      <div class="header">header</div>
+      <div class="header">
+        <top-header />
+      </div>
       <div class="separator">222</div>
       <div class="center">
         <div class="left">
