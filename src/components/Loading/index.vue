@@ -9,7 +9,7 @@
         :cy="height/2"
         :r="cr"
         fill="transparent"
-        stroke-width="3"
+        stroke-width="10"
         :stroke-dasharray="dashArrayOut"
         :stroke="outlineColor"
         stroke-linecap="round"
@@ -34,7 +34,7 @@
         :cy="height/2"
         :r="crIn"
         fill="transparent"
-        stroke-width="3"
+        stroke-width="10"
         :stroke-dasharray="dashArrayIn"
         :stroke="inlineColor"
         stroke-linecap="round"
@@ -138,8 +138,5 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  .loading-tip {
-    font-size: 15px;
-  }
 }
 </style>

@@ -93,7 +93,7 @@ export default {
     }
 
     const onResize = async (e) => {
-      console.log('onResize', e) // MutationObserver将属性传入了
+      // MutationObserver将属性传入了 console.log('onResize', e) 
       await initSize()
       updateScale()
     }
