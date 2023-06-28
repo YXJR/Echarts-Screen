@@ -15,10 +15,16 @@
       <div class="header">
         <top-header />
       </div>
-      <div class="separator">222</div>
+      <div class="separator"></div>
       <div class="center">
         <div class="left">
-          <div class="left1">111</div>
+          <div class="left1">
+            <total-user
+              :today-user="todayUser"
+              :growth-day="growthLastDay"
+              :growth-month="growthLastMonth"
+            />
+          </div>
           <div class="left2">111</div>
           <div class="left3">111</div>
           <div class="left4">111</div>
@@ -49,9 +55,13 @@
 
 <script>
 import { ref, onMounted } from "vue"
+import TotalUser from "../components/TotalUser/index.vue"
+import { useTotalUser } from "../hooks/useScreenData"
 export default {
   name: 'Home',
-
+  components: {
+    TotalUser
+  },
   setup () {
     let loading = ref(true)
     onMounted(() => {
@@ -60,7 +70,8 @@ export default {
       }, 2500)
     })
     return {
-      loading
+      loading,
+      ...useTotalUser()
     }
   }
 }
@@ -89,7 +100,7 @@ export default {
     }
     .separator {
       height: 10px;
-      background: #000;
+      background: #999;
     }
     .center {
       flex: 1;
