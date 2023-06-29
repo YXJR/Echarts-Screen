@@ -38,7 +38,9 @@
           <div class="left6">111</div>
         </div>
         <div class="right">
-          <div class="right-top1">right-top1</div>
+          <div class="right-top1">
+            <center-header></center-header>
+          </div>
           <div class="right-top2">right-top2</div>
           <div class="right-bottom">
             <div class="right-left">
@@ -63,12 +65,14 @@
 import { ref, onMounted } from "vue"
 import TotalUser from "../components/TotalUser/index.vue"
 import AverageAge from "../components/AverageAge/index.vue"
+import CenterHeader from "../components/CenterHeader/index.vue"
 import { useTotalUser } from "../hooks/useScreenData"
 export default {
   name: 'Home',
   components: {
     TotalUser,
-    AverageAge
+    AverageAge,
+    CenterHeader
   },
   setup () {
     let loading = ref(true)

@@ -4,6 +4,7 @@ import VueEcharts from "./VueEcharts/index"
 
 import Logo from "./Logo/index.js"
 import CountTo from "./VueCountTo/index.js"
+import Icon from "./Icon/index"
 
 export default function (Vue) {
   Vue.use(Container)
@@ -11,4 +12,5 @@ export default function (Vue) {
   Vue.use(VueEcharts)
   Vue.use(Logo)
   Vue.use(CountTo)
+  Vue.use(Icon)
 }
