@@ -50,7 +50,9 @@
               <div class="right-left4">333</div>
             </div>
             <div class="right-right">
-              <div class="right-right1">444</div>
+              <div class="right-right1">
+                <auto-scroll-table></auto-scroll-table>
+              </div>
               <div class="right-right2">555</div>
             </div>
           </div>
