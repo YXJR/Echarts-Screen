@@ -8,7 +8,10 @@
       >
         <div class="left">
           <div class="bg">
-            <icon :name="item.img" />
+            <icon
+              :name="item.img"
+              :style="{width:'100px',height:'100px'}"
+            />
           </div>
         </div>
         <div class="right">

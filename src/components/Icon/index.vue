@@ -1,9 +1,9 @@
 <template>
-  <div
-    class="icon-wrapper"
-    :style="{...style}"
-  >
-    <svg class="icon">
+  <div :style="{...style}">
+    <svg
+      class="icon"
+      :aria-hidden="true"
+    >
       <use :href="iconName"></use>
     </svg>
   </div>
@@ -36,8 +36,8 @@ export default {
 
 <style lang="scss" scoped>
 .icon {
-  width: 5.5rem;
-  height: 5.5rem;
+  width: 100%;
+  height: 100%;
   fill: white;
   stroke: #fff;
 }

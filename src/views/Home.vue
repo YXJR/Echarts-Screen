@@ -51,7 +51,7 @@
             </div>
             <div class="right-right">
               <div class="right-right1">
-                <auto-scroll-table></auto-scroll-table>
+                <auto-scroll-table :height="999"></auto-scroll-table>
               </div>
               <div class="right-right2">555</div>
             </div>
@@ -120,7 +120,7 @@ export default {
       flex: 1;
       display: flex;
       width: 100%;
-      background: rebeccapurple;
+
       .left {
         flex: 0 0 860px;
         display: flex;
@@ -207,7 +207,6 @@ export default {
             .right-right1 {
               width: 100%;
               height: 999px;
-              background: burlywood;
             }
             .right-right2 {
               width: 100%;
