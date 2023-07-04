@@ -41,7 +41,7 @@
   
 <script >
 // TODO: 斑马条纹不生效
-import { ref, onMounted, computed, watch } from "vue"
+import { ref, onMounted, computed, watch, onBeforeUnmount, } from "vue"
 export default {
   name: 'AutoScrollTable',
   props: {
@@ -68,7 +68,7 @@ export default {
   setup (ctx) {
     const refName = ref("table")
 
-    let currentIndex = ref(0)
+    let currentIndex = ref(1)
     //表头高度和各行得高度
     const columnHeightNum = ref("0")
     const headerHeightNum = ref('90')
@@ -145,26 +145,32 @@ export default {
 
     const clearAnimation = () => {
       task && clearInterval(task)
-      console.log(`currentIndex.value`, currentIndex.value);
       tableData.value.splice(0, currentIndex.value - 1)
-      currentIndex.value = 0
+      currentIndex.value = 1
       wrapperBody.style.transition = ''
       wrapperBody.style.marginTop = `0`
       isClearAnimate.value = true
     }
+
+    // 开启动画
     const switchAnimation = () => {
       if (ctx.disRowNumber >= dataLen) {
         return
       }
-      // 需要开启动画了
       wrapperBody = document.getElementsByClassName("el-table__body")[0]
       task = setInterval(setAnimation, 2000)
     }
-    watch(() => isClearAnimate.value, (newVal, oldVal) => {
+
+    watch(() => isClearAnimate.value, (newVal) => {
       newVal ? switchAnimation() : clearAnimation()
     })
+
     onMounted(() => {
       switchAnimation()
+    })
+
+    onBeforeUnmount(() => {
+      task && clearInterval(task)
     })
 
     return {
@@ -172,7 +178,6 @@ export default {
       columnHeight,
       headerHeight,
       refName,
-
     }
   }
 }
