@@ -1,44 +1,47 @@
 <template>
-  <el-table
-    id="table"
-    ref="table"
-    :data="tableData"
-    :height="height"
-    header-row-class-name="setRowClass"
-    :stripe="true"
-    style="text-align:center"
-  >
-    <el-table-column
-      label="Date"
-      header-align="center"
-      width="120"
+  <Transition mode="out-in">
+    <el-table
+      id="table"
+      :ref="refName"
+      :data="tableData"
+      :height="height"
+      header-row-class-name="setHeaderRowClass"
+      :stripe="true"
+      style="text-align:center"
     >
-      <template #default>
-        <icon
-          name="iconfont_dot"
-          :style="{width:'50px',height:'50px'}"
-        />
-      </template>
-    </el-table-column>
-    <el-table-column
-      prop="date"
-      label="Date"
-    />
-    <el-table-column
-      prop="name"
-      label="Name"
-      width="240"
-    />
-    <el-table-column
-      prop="address"
-      label="Address"
-    />
-  </el-table>
+      <el-table-column
+        label="Date"
+        header-align="center"
+        width="120"
+      >
+        <template #default>
+          <icon
+            name="iconfont_dot"
+            :style="{width:'50px',height:'50px'}"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="date"
+        label="Date"
+      />
+      <el-table-column
+        prop="name"
+        label="Name"
+        width="240"
+      />
+      <el-table-column
+        prop="address"
+        label="Address"
+      />
+    </el-table>
+  </Transition>
+
 </template>
   
 <script >
 // TODO: 斑马条纹不生效
-import { ref, onMounted, computed, getCurrentInstance } from "vue"
+import { ref, onMounted, computed, watch } from "vue"
 export default {
   name: 'AutoScrollTable',
   props: {
@@ -63,12 +66,19 @@ export default {
 
   },
   setup (ctx) {
+    const refName = ref("table")
+
+    let currentIndex = ref(0)
     //表头高度和各行得高度
     const columnHeightNum = ref("0")
-    const headerHeightNum = ref('60')
+    const headerHeightNum = ref('90')
     const headerHeight = computed(() => `${headerHeightNum.value}px`)
+    let isClearAnimate = ref(true)
     let columnHeight;
+    columnHeightNum.value = (ctx.height - headerHeightNum.value) / ctx.disRowNumber
+    columnHeight = computed(() => `${columnHeightNum.value}px`)
     let task;
+    let wrapperBody = null;
 
     const tableData = ref([
       {
@@ -112,42 +122,57 @@ export default {
         address: 'No. 189',
       },
     ])
+    let tem = [...tableData.value]
+    let dataLen = tableData.value && tableData.value.length;
 
     const setAnimation = () => {
-      //数据的条数
-      let dataLen = tableData.value && tableData.value.length;
-      // table得总体高度
-      let instance = getCurrentInstance()
-      let tableDomHeight = instance.refs['table'].height
-      // 根据传入得需要展示得条数计算每行得高度
-      columnHeightNum.value = (tableDomHeight - headerHeightNum.value) / ctx.disRowNumber
-      columnHeight = computed(() => `${columnHeightNum.value}px`)
-      // 实际数据条数 * 每行高度
-      let columnSumHeight = dataLen * columnHeightNum.value
-      // 实际数据条数展示得总高度  没有超出  表格得高度   
-      if (columnSumHeight <= tableDomHeight - headerHeightNum.value) {
+      let num = currentIndex.value * columnHeightNum.value
+      wrapperBody.style.transition = 'margin-top 1s'
+      wrapperBody.style.marginTop = `-${num}px`
+
+      if (dataLen - currentIndex.value == ctx.disRowNumber) {
+        tableData.value = [...tableData.value, ...tem]
+      }
+
+
+      if (dataLen < currentIndex.value) {
+        isClearAnimate.value = false
+      } else {
+        currentIndex.value = currentIndex.value + 1
+      }
+
+    }
+
+    const clearAnimation = () => {
+      task && clearInterval(task)
+      console.log(`currentIndex.value`, currentIndex.value);
+      tableData.value.splice(0, currentIndex.value - 1)
+      currentIndex.value = 0
+      wrapperBody.style.transition = ''
+      wrapperBody.style.marginTop = `0`
+      isClearAnimate.value = true
+    }
+    const switchAnimation = () => {
+      if (ctx.disRowNumber >= dataLen) {
         return
       }
-      let currentIndex = 0
-      let tem = [...tableData.value];
-      task = setInterval(() => {
-        // 只在原数组得基础上进行操作
-        let newArr = tableData.value.splice(0, ctx.moveNum) // 防止数组塌陷得问题
-        tableData.value = [...tableData.value, ...tem]
-        currentIndex += ctx.moveNum
-
-      }, 1000);
+      // 需要开启动画了
+      wrapperBody = document.getElementsByClassName("el-table__body")[0]
+      task = setInterval(setAnimation, 2000)
     }
-    onMounted(() => {
-
-
-
-      setAnimation()
+    watch(() => isClearAnimate.value, (newVal, oldVal) => {
+      newVal ? switchAnimation() : clearAnimation()
     })
+    onMounted(() => {
+      switchAnimation()
+    })
+
     return {
       tableData,
       columnHeight,
-      headerHeight
+      headerHeight,
+      refName,
+
     }
   }
 }
@@ -161,15 +186,24 @@ export default {
   overflow: hidden;
 }
 
-:deep(.el-table__row) {
-  height: v-bind(columnHeight);
-}
-:deep(.el-table__row:nth-child(odd)) {
-  background-color: rgba(44, 42, 42, 0.4);
-}
-
-:deep(.setRowClass) {
-  height: v-bind(headerHeight);
+:deep(.el-table__inner-wrapper) {
+  .el-table__body {
+  }
+  .el-table__header-wrapper {
+    background: black;
+    position: relative !important;
+    z-index: 10000000;
+  }
+  .setHeaderRowClass {
+    height: v-bind(headerHeight);
+  }
+  .el-table__row {
+    height: v-bind(columnHeight);
+    //background: red;
+  }
+  .el-table__row:nth-child(odd) {
+    background-color: rgba(85, 4, 4, 0.4);
+  }
 }
 </style>
 <!-- 更改单元格得属性 -->
